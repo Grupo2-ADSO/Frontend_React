@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.fondo {
+  height: 100vh;
+  background-image: url('./assets/fondo.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.sesion {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sesionCuadro {
+  width: 300px;
+  padding: 20px;
+  border: 3px solid #1F3D2B;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+  background-color: white;
+}
+
+.sesionCuadro input {
+  padding: 10px;
+}
+
+.sesionCuadro button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  border: 3px solid #1F3D2B;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #F6F6F2;
+}

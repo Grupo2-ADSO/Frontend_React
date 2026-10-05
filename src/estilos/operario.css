@@ -1,0 +1,156 @@
+.contenedor {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+}
+
+.columnaIzquierda {
+    width: 200px;
+    height: 100%;
+    background-color: #0f4d32;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    width: 150px;
+    border-radius: 12%;
+    height: auto;
+    object-fit: contain;
+    margin-top: 25px;
+}
+
+.menu {
+    margin-top: 100px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+    color: white;
+}
+
+.contenido {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.linea {
+    height: 7vw;
+    border-bottom: 5px solid black;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: white;
+}
+
+.titulo {
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 2.2rem;
+    color: #0f4d32;
+}
+
+.perfil {
+    position: absolute;
+    right: 20px;
+    background-color: #0f4d32;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.seccionPerfil {
+    width: calc(100vw - 250px);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tituloPerfil {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0f4d32;
+    margin-bottom: 20px;
+}
+
+.cuadroCentro {
+    width: 60%;
+    height: 395px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.encabezado {
+    height: 40px;
+    background-color: #0f4d32;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.estado {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.imagenPerfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.perfiles {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+}
+
+.nombre {
+    font-weight: bold;
+    color: #0f4d32;
+    margin-top: 10px;
+    font-size: 19px;
+}
+
+.rol {
+    margin-top: 2px;
+    color: #0f4d32;
+    font-weight: bold;
+}
+
+.informacion {
+    margin-top: 2px;
+    color: #0f4d32;
+    font-weight: bold;
+}
+
+.volver {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #0f4d32;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.menuLateral {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
