@@ -10,6 +10,7 @@ function Login() {
     const [clave, setClave] = useState('')
     const [rol, setRol] = useState(null)
     const [cerrandoSesion, setCerrandoSesion] = useState(false)
+    const [errorSesion, setErrorSesion] = useState(false)
 
     useEffect(() => {
         const rolGuardar = localStorage.getItem('rol')
@@ -35,15 +36,18 @@ function Login() {
 
             setRol(rolUsuario)
         } catch (error) {
-            console.log(error)
+            setErrorSesion(true)
         }
     }
     if (cerrandoSesion) {
         return (
-            <CerrarSesion volver={() => {
-                setRol(null)
-                setCerrandoSesion(false)
-            }} />
+            <CerrarSesion volver={() => setCerrandoSesion(false)}
+                salir={() => {
+                    setRol(null)
+                    setCorreo('')
+                    setClave('')
+                    setCerrandoSesion(false)
+                }} />
         )
     }
     if (rol === 1) {
@@ -70,6 +74,27 @@ function Login() {
                     </button>
                 </div>
             </div>
+            {errorSesion && (
+                <div className="modal d-block" tabIndex={-1}>
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">
+                                    Error al inciar sesion
+                                </h5>
+                            </div>
+                            <div className="modal-body">
+                                <p>Correo o Contraseña incorrectas</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-success" onClick={() => setErrorSesion(false)}>
+                                    Aceptar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

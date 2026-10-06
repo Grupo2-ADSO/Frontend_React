@@ -1,12 +1,11 @@
 import '../estilos/CerrarSesion.css'
 
-function CerrarSesion({ volver }) {
+function CerrarSesion({ volver, salir }) {
     const cerrar = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('usuario')
         localStorage.removeItem('rol')
-
-        volver()
+        salir()
     }
 
     return (
@@ -17,7 +16,7 @@ function CerrarSesion({ volver }) {
                     <button className="botonVolver" onClick={cerrar}>
                         Cerrar Sesion
                     </button>
-                    <button className='bontonVolver' onClick={volver}>
+                    <button className='botonVolver' onClick={volver}>
                         Atras
                     </button>
                 </div>
