@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 
+
 function Menu() {
   return (
     <nav>
@@ -11,33 +12,31 @@ function Menu() {
         />
 
         <li>
-          <NavLink to="/">
+          <NavLink to="inicio">
             Inicio
           </NavLink>
         </li>
 
         <li>
-          <NavLink to="/ordenes">
+          <NavLink to="/Ordenes">
             Orden de trabajos
           </NavLink>
         </li>
 
         <li>
-          <NavLink to="/evidencias">
+          <NavLink to="/Evidencias">
             Evidencias
           </NavLink>
         </li>
 
         <li>
-          <NavLink to="/historial">
+          <NavLink to="/Historial">
             Historial del Operario
           </NavLink>
         </li>
 
         <li>
-          <button type="button">
-            Cerrar Sesión
-          </button>
+          <button id="cerrar-sesion"> Cerrar Sesión </button>
         </li>
       </ol>
     </nav>

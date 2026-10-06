@@ -43,6 +43,28 @@ nav {
     transition: 0.3s;
 }
 
+#cerrar-sesion {
+  width: 100%;
+  padding: 25px;
+
+  background-color: transparent;
+  color: white;
+
+  border: none;
+  border-radius: 5px;
+
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+#cerrar-sesion:hover {
+  background-color: #1e7a52;
+  transition: 0.3s;
+}
+
 main {
     margin-left: 250px;
     padding: 110px 40px 40px;

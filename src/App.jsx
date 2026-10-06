@@ -11,10 +11,10 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Inicio />} />
-        <Route path="ordenes-trabajo" element={<OrdenesTrabajo />} />
-        <Route path="evidencias" element={<Evidencias />} />
-        <Route path="historial-operario" element={<HistorialOperario />} />
+        <Route path="inicio" element={<Inicio />} />
+        <Route path="Ordenes" element={<OrdenesTrabajo />} />
+        <Route path="Evidencias" element={<Evidencias />} />
+        <Route path="Historial" element={<HistorialOperario />} />
       </Route>
     </Routes>
     </BrowserRouter>

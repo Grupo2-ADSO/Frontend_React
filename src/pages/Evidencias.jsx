@@ -7,4 +7,4 @@ function Evidencias() {
   );
 }
 
-export default Evidencias;
+export default Evidencias;   
