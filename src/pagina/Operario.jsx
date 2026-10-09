@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { use, useState } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import imagenOperario from '../assets/imagenOperario.jpeg'
 import '../estilos/Operario.css'
 
-function Operario(cerrandoSesion) {
+function Operario({ cerrandoSesion }) {
     const [pagina, setPagina] = useState('inicio')
+    const usuario = JSON.parse(localStorage.getItem('usuario'))
+    console.log(usuario)
 
     return (
         <div className="contenedor">
@@ -26,7 +28,7 @@ function Operario(cerrandoSesion) {
             </aside>
             <main className="contenido">
                 <div className="linea">
-                    <span className="titulo">Operario</span>
+                    <span className="titulo">Administrador</span>
                     <a href="" className="perfil" onClick={(e) => {
                         e.preventDefault()
                         setPagina('perfil')
@@ -45,16 +47,10 @@ function Operario(cerrandoSesion) {
                             <div className="imagenPerfil">
                                 <img src={imagenOperario} className="perfiles" />
                                 <span className="nombre">
-                                    Coreano yositoco
-                                </span>
-                                <span className="rol">
-                                    Operario
+                                    {usuario.Nombre} {usuario.Apellido}
                                 </span>
                                 <span className="informacion">
-                                    Numero: +57 322 4398137
-                                </span>
-                                <span className="informacion">
-                                    Email: coreanoOper@email.com
+                                    Email: {usuario.Coreo}
                                 </span>
                                 <a href="" className="volver">
                                     Atras

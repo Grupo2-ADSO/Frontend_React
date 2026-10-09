@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { use, useState } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import imagenPerfil from '../assets/imagenPerfil.jpeg'
 import '../estilos/Supervisor.css'
 
-function Supervisor(cerrandoSesion) {
+function Supervisor({ cerrandoSesion }) {
     const [pagina, setPagina] = useState('inicio')
+    const usuario = JSON.parse(localStorage.getItem('usuario'))
+    console.log(usuario)
 
     return (
         <div className="contenedor">
@@ -26,7 +28,7 @@ function Supervisor(cerrandoSesion) {
             </aside>
             <main className="contenido">
                 <div className="linea">
-                    <span className="titulo">Supervisor</span>
+                    <span className="titulo">Administrador</span>
                     <a href="" className="perfil" onClick={(e) => {
                         e.preventDefault()
                         setPagina('perfil')
@@ -45,16 +47,10 @@ function Supervisor(cerrandoSesion) {
                             <div className="imagenPerfil">
                                 <img src={imagenPerfil} className="perfiles" />
                                 <span className="nombre">
-                                    chequio
-                                </span>
-                                <span className="rol">
-                                    Supervisor
+                                    {usuario.Nombre} {usuario.Apellido}
                                 </span>
                                 <span className="informacion">
-                                    Numero: +57 321 4618131
-                                </span>
-                                <span className="informacion">
-                                    Email: sergioSuper@email.com
+                                    Email: {usuario.Coreo}
                                 </span>
                                 <a href="" className="volver">
                                     Atras

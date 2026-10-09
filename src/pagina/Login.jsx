@@ -30,6 +30,7 @@ function Login() {
                 }
             )
             const rolUsuario = respuesta.data.rol.IdRol
+            console.log(respuesta.data)
             localStorage.setItem('token', respuesta.data.token)
             localStorage.setItem('usuario', JSON.stringify(respuesta.data.usuario))
             localStorage.setItem('rol', rolUsuario)
