@@ -13,12 +13,15 @@ function TablaEstado({ ordenes }) {
 
       <tbody>
         {ordenes.map((orden) => (
-          <tr key={orden.id}>
-            <td>{orden.id}</td>
-            <td>{orden.habitaciones}</td>
+          <tr key={orden.idOrden}>
+            <td>{orden.idOrden}</td>
             <td>{orden.descripcion}</td>
-            <td>{orden.fecha}</td>
-            <td>{orden.estado}</td>
+            <td>{orden.prioridad}</td>
+            <td>{orden.fecha_creacion}</td>
+            <td>{orden.reportes_IdReporte}</td>
+            <td>{orden.ambientes_id_ambiente}</td>
+            <td>{orden.habitaciones_No_habitacion}</td>
+            <td>{orden.usuario_IdUsuario}</td>
             <td>
               <span
                 className={`estado ${orden.estado.toLowerCase().replace("", "-")}`}
