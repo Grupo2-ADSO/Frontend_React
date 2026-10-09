@@ -4,10 +4,13 @@ function TablaEstado({ ordenes }) {
       <thead>
         <tr>
           <th>ID</th>
-          <th>Habitaciones</th>
           <th>Descripcion</th>
-          <th>Fecha</th>
-          <th>Estado</th>
+          <th>Prioridad</th>
+          <th>Fecha de creacion</th>
+          <th>Reporte</th>
+          <th>Ambiente</th>
+          <th>Habitacion</th>
+          <th>Usuario</th>
         </tr>
       </thead>
 
