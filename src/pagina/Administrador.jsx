@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import Sergio from '../assets/Sergio.jpeg'
-
+import fondo2 from '../assets/fondo2.jpeg'
+import axios from 'axios'
 
 function Administrador({ cerrandoSesion }) {
     const [pagina, setPagina] = useState('inicio')
@@ -9,15 +10,20 @@ function Administrador({ cerrandoSesion }) {
     const [tipoCambio, setTipoCambio] = useState('')
     const [contrasenaActual, setContrasenaActual] = useState('')
     const [nuevoCorreo, setNuevoCorreo] = useState('')
+    const [nuevoTelefono, setNuevoTelefono] = useState('')
     const [nuevaContrasena, setNuevaContrasena] = useState('')
     const [confirmarContrasena, setConfirmarContrasena] = useState('')
     const usuario = JSON.parse(localStorage.getItem('usuario'))
+
 
     return (
         <div className="container-fluid p-0">
             <div className='row g-0 min-vh-100'>
                 <aside className="col-md-3 col-lg-2 bg-success text-white p-3">
-                    <img src={izquierda} className="img-fluid mb-4" alt='Logo' />
+                    <img src={izquierda} className="w-100 mb-4" alt='Logo' style={{
+                        marginTop: '-12px',
+                        display: 'block'
+                    }} />
                     <nav className="nav flex-column gap-2">
                         <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Inicio</a>
                         <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Crear Ordenes</a>
@@ -32,7 +38,12 @@ function Administrador({ cerrandoSesion }) {
                         </a>
                     </nav>
                 </aside>
-                <main className="col p-4 bg-light">
+                <main className="col p-4" style={{
+                    backgroundImage: `url(${fondo2})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                }}>
                     <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm">
                         <h4 className='mb-0 text-success'>
                             Adminitrador
@@ -56,21 +67,29 @@ function Administrador({ cerrandoSesion }) {
                                         </div>
                                         <div className="card-body d-flex flex-column align-items-center text-center p-4">
                                             <img src={Sergio} className="rounded-circle img-thumbnail mb-3" alt='Foto de perfil' style={{
-                                                width: '150px',
-                                                height: '150px',
-                                                objectFit: '150px'
+                                                width: '180px',
+                                                height: '180px',
+                                                objectFit: 'cover'
                                             }} />
                                             <h5 className="card-title">
                                                 {usuario.Nombre} {usuario.Apellidos}
                                             </h5>
-                                            <p className="card-text text-secondary">
-                                                Email: {usuario.Correo}
-                                            </p>
+                                            <div className='text-secondary mb-3' >
+                                                <p className="mb-2">
+                                                    <strong>Correo:</strong> {usuario.Correo}
+                                                </p>
+                                                <p className='mb-0'>
+                                                    <strong>Telefono:</strong> {usuario.Telefono}
+                                                </p>
+                                                <p className='mb-2'>
+                                                    <strong>Cedula:</strong> {usuario.Cedula}
+                                                </p>
+                                            </div>
                                             <button type="button" className="btn btn-success mt-2" onClick={() => {
                                                 setMostrarModal(true)
                                                 setTipoCambio('')
                                             }}>
-                                                Cambiar contraseña o correo
+                                                Cambiar datos
                                             </button>
                                         </div>
                                     </div>
@@ -95,8 +114,11 @@ function Administrador({ cerrandoSesion }) {
                                                 <button type='button' className='btn btn-success w-100 mb-2' onClick={() => setTipoCambio('correo')}>
                                                     Cambiar correo
                                                 </button>
+                                                <button type='button' className='btn btn-success w-100 mb-2' onClick={() => setTipoCambio('telefono')}>
+                                                    Cambiar telefono
+                                                </button>
                                                 <button type='button' className='btn btn-success w-100' onClick={() => setTipoCambio('contrasena')}>
-                                                    Cambiar Coneseña
+                                                    Cambiar Contraseña
                                                 </button>
                                             </>
                                         )}
