@@ -2,9 +2,12 @@ import { useState } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import Sergio from '../assets/Sergio.jpeg'
 import fondo2 from '../assets/fondo2.jpeg'
-import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Administrador({ cerrandoSesion }) {
+    const navigate = useNavigate()
+
+    const cerrarPerfil = cerrandoSesion || (() => navigate('/cerrar-sesion'))
     const [pagina, setPagina] = useState('inicio')
     const [mostrarModal, setMostrarModal] = useState(false)
     const [tipoCambio, setTipoCambio] = useState('')
@@ -25,14 +28,14 @@ function Administrador({ cerrandoSesion }) {
                         display: 'block'
                     }} />
                     <nav className="nav flex-column gap-2">
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Inicio</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Crear Ordenes</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Ordenes</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Usarios</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Reportes</a>
+                        <Link to="/admin" className="nav-link text-white" >Inicio</Link>
+                        <Link to="/ordenes" className="nav-link text-white" >Crear Ordenes</Link>
+                        <Link to="/admin/ordenes" className="nav-link text-white" >Ordenes</Link>
+                        <Link to="/admin/usuario" className="nav-link text-white" >Usarios</Link>
+                        <Link to="/admin/reportes" className="nav-link text-white" >Reportes</Link>
                         <a href="#" className="nav-link text-white" onClick={(e) => {
                             e.preventDefault()
-                            cerrandoSesion()
+                            cerrarPerfil()
                         }}>
                             Cerrar sesion
                         </a>

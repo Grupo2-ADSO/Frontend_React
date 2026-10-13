@@ -2,9 +2,12 @@ import { useState } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import imagenPerfil from '../assets/imagenPerfil.jpeg'
 import fondo2 from '../assets/fondo2.jpeg'
-import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Supervisor({ cerrandoSesion }) {
+    const navigate = useNavigate()
+
+    const cerrarPerfil = cerrandoSesion || (() => navigate('/cerrar-sesion'))
     const [pagina, setPagina] = useState('inicio')
     const [mostrarModal, setMostrarModal] = useState(false)
     const [tipoCambio, setTipoCambio] = useState('')
@@ -25,14 +28,12 @@ function Supervisor({ cerrandoSesion }) {
                         display: 'block'
                     }} />
                     <nav className="nav flex-column gap-2">
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Inicio</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Crear Ordenes</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Ordenes</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Usarios</a>
-                        <a href="#" className="nav-link text-white" onClick={(e) => e.preventDefault()}>Reportes</a>
+                        <Link to="/supervisor" className="nav-link text-white" >Inicio</Link>
+                        <Link to="/ordenes" className="nav-link text-white" >Órdenes de trabajo</Link>
+                        <Link to="/evidencias" className="nav-link text-white" >Evidencias</Link>
                         <a href="#" className="nav-link text-white" onClick={(e) => {
                             e.preventDefault()
-                            cerrandoSesion()
+                            cerrarPerfil()
                         }}>
                             Cerrar sesion
                         </a>
