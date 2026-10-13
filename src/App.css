@@ -1,0 +1,448 @@
+/* Estilos principales del sistema Holiday Inn */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f4;
+}
+
+/* Menú lateral */
+.app-sidebar {
+  width: 250px;
+  min-height: 100vh;
+  padding: 20px 15px;
+  background: #0f4d32;
+  color: white;
+}
+
+.app-logo {
+  display: block;
+  width: 100%;
+  max-height: 110px;
+  margin: 0 auto 25px;
+  object-fit: contain;
+}
+
+.app-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-menu a {
+  padding: 11px 12px;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+}
+
+.app-menu a:hover,
+.app-menu a.active {
+  background: #27744f;
+}
+
+/* Contenido y encabezado */
+.app-main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.app-header {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 25px;
+  border-bottom: 1px solid #d8e0da;
+  background: white;
+}
+
+.app-header h1 {
+  margin: 0;
+  color: #0f4d32;
+  font-size: 1.4rem;
+}
+
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-user-name {
+  color: #4e5d53;
+}
+
+.app-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 25px;
+}
+
+.page-heading {
+  margin-bottom: 22px;
+}
+
+.page-heading h2 {
+  margin: 0 0 8px;
+  color: #174b32;
+}
+
+.page-heading p,
+.muted {
+  color: #627067;
+}
+
+/* Botones */
+.button,
+.profile-link {
+  display: inline-block;
+  padding: 10px 15px;
+  border: 1px solid #0f4d32;
+  border-radius: 5px;
+  background: #0f4d32;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+.profile-link:hover {
+  background: #27744f;
+  color: white;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.button-secondary {
+  background: white;
+  color: #0f4d32;
+}
+
+.button-secondary:hover {
+  background: #eaf1ec;
+  color: #0f4d32;
+}
+
+.button-danger {
+  border-color: #a12b24;
+  background: #a12b24;
+}
+
+/* Tarjetas y paneles */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card,
+.content-card {
+  padding: 20px;
+  border: 1px solid #d8e0da;
+  border-radius: 8px;
+  background: white;
+}
+
+.dashboard-card h3,
+.content-card h3 {
+  margin-top: 0;
+  color: #174b32;
+}
+
+.dashboard-card p,
+.content-card p {
+  color: #56645b;
+}
+
+/* Formularios */
+.login-page,
+.logout-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 20px;
+  background: linear-gradient(#0006, #0006), url('./assets/fondo.png') center / cover;
+}
+
+.login-card,
+.logout-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 10px;
+  background: white;
+}
+
+.login-card h1,
+.logout-card h1 {
+  margin-top: 0;
+  color: #174b32;
+  text-align: center;
+}
+
+.login-card > p,
+.logout-card > p {
+  color: #56645b;
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-form label,
+.json-editor label,
+.detail-search label,
+.file-fields label {
+  font-weight: bold;
+}
+
+.login-form input,
+.json-editor input:not([type='file']),
+.detail-search input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bdc9c0;
+  border-radius: 5px;
+}
+
+.login-form .button {
+  margin-top: 8px;
+}
+
+.json-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.json-editor textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bdc9c0;
+  border-radius: 5px;
+  font: 14px/1.5 Consolas, monospace;
+}
+
+.file-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-actions,
+.logout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detail-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.detail-search input {
+  flex: 1;
+}
+
+/* Mensajes */
+.error-message,
+.success-message {
+  padding: 12px;
+  border-radius: 5px;
+}
+
+.error-message {
+  background: #ffefed;
+  color: #982820;
+}
+
+.success-message {
+  background: #e8f4ea;
+  color: #17633c;
+}
+
+/* Perfil */
+.profile-card {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.profile-avatar {
+  display: grid;
+  width: 100px;
+  height: 100px;
+  place-items: center;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #eaf1ec;
+  color: #174b32;
+  font-size: 2.4rem;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+/* Tablas */
+.table-scroll {
+  margin: 16px 0 22px;
+  overflow-x: auto;
+  border: 1px solid #d8e0da;
+  border-radius: 7px;
+  background: white;
+}
+
+.data-table,
+.tabla-ordenes {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: white;
+}
+
+.data-table th,
+.data-table td,
+.tabla-ordenes th,
+.tabla-ordenes td {
+  padding: 12px;
+  border-bottom: 1px solid #e1e7e2;
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table th,
+.tabla-ordenes th {
+  background: #e8f0ea;
+  color: #174b32;
+}
+
+.data-table tbody tr:nth-child(even),
+.tabla-ordenes tbody tr:nth-child(even) {
+  background: #f7f9f7;
+}
+
+.estado-badge,
+.table-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #e8f0ea;
+  color: #174b32;
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.table-button {
+  padding: 6px 9px;
+  border: 1px solid #0f4d32;
+  border-radius: 4px;
+  background: white;
+  color: #0f4d32;
+  cursor: pointer;
+}
+
+.table-button:hover {
+  background: #e8f0ea;
+}
+
+.table-button-danger {
+  border-color: #a12b24;
+  color: #a12b24;
+}
+
+.admin-resource-heading,
+.resource-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.resource-list-heading h3,
+.detail-table-section h3 {
+  color: #174b32;
+}
+
+.detail-table-section {
+  margin: 20px 0;
+}
+
+.datos-sistema {
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 760px) {
+  .app-shell {
+    display: block;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .app-logo {
+    width: 140px;
+    max-height: 65px;
+    margin-bottom: 12px;
+  }
+
+  .app-menu {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .app-menu a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .app-header {
+    padding: 12px 15px;
+  }
+
+  .app-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .app-user-name {
+    display: none;
+  }
+
+  .app-content {
+    padding: 18px 14px;
+  }
+
+  .admin-resource-heading,
+  .resource-list-heading,
+  .detail-search {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
