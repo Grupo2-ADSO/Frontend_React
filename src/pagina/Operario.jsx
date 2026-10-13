@@ -19,7 +19,7 @@ function Operario({ cerrandoSesion }) {
     return (
         <div className="container-fluid p-0">
             <div className='row g-0 min-vh-100'>
-                <aside className="col-md-3 col-lg-2 bg-success text-white p-3">
+                <aside className="col-md-3 col-lg-2 bg-success text-white p-0">
                     <img src={izquierda} className="w-100 mb-4" alt='Logo' style={{
                         marginTop: '-12px',
                         display: 'block'
