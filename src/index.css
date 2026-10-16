@@ -1,15 +1,44 @@
-:root {
-  font-family: Arial, Helvetica, sans-serif;
-  color: #24352a;
-  background: #f3f5f3;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
+body {
+  margin: 0;
+  padding: 0;
 }
 
-* { box-sizing: border-box; }
-html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
-body { min-height: 100vh; }
-button, input { font: inherit; }
+.fondo {
+  height: 100vh;
+  background-image: url('./assets/fondo.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.sesion {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sesionCuadro {
+  width: 300px;
+  padding: 20px;
+  border: 3px solid #1F3D2B;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+  background-color: white;
+}
+
+.sesionCuadro input {
+  padding: 10px;
+}
+
+.sesionCuadro button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  border: 3px solid #1F3D2B;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #F6F6F2;
+}

@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.mensaje {
+    height: calc(100vh - 240px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1F3D2B;
+}
+
+.fondo {
+    height: calc(130vh - 150px);
+    background-size: cover;
+    background-position: center;
+}
+
+.mensajeCuadro {
+    width: 300px;
+    padding: 20px;
+    border: 3px solid #1F3D2B;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    transform: translateY(110px);
+    background-color: white;
+}
+
+.botonVolver {
+    margin-top: 15px;
+    padding: 10px 25px;
+    border: 3px solid #1F3D2B;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #F6F6F2;
+    text-decoration: none;
+    color: #1F3D2B;
+}
