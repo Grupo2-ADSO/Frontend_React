@@ -4,11 +4,12 @@ import api from "../services/api";
 
 const formularioVacio = {
   descripcion: "",
-  prioridad: "Media",
+  prioridad: "media",
   reportes_IdReporte: "",
   habitaciones_No_habitacion: "",
   ambientes_id_ambiente: "",
-  estado: "Pendiente",
+  usuarios_id_usuario: "", 
+  estado: "pendiente",
 };
 
 function leerCampo(registro, ...campos) {
@@ -50,6 +51,7 @@ function obtenerLista(datos, claves = []) {
 
   const posiblesListas = [
     datos.data,
+    datos.datos, 
     datos.results,
     datos.habitaciones,
     datos.habitacion,
@@ -93,6 +95,11 @@ function idReporte(reporte) {
 
 function idOrden(orden) {
   return leerCampo(orden, "idOrden", "IdOrden", "id_orden", "id");
+}
+
+
+function idOperario(operario) {
+  return leerCampo(operario, "idUsuario", "id_usuario", "id");
 }
 
 function mensajeError(error, textoPredeterminado) {
@@ -141,6 +148,7 @@ function OrdenesTrabajo() {
   const [habitaciones, setHabitaciones] = useState([]);
   const [ambientes, setAmbientes] = useState([]);
   const [reportes, setReportes] = useState([]);
+  const [operarios, setOperarios] = useState([]); // Estado para operarios
 
   const [cargando, setCargando] = useState(true);
   const [cargandoOpciones, setCargandoOpciones] = useState(true);
@@ -206,51 +214,52 @@ function OrdenesTrabajo() {
         api.get("/habitaciones"),
         api.get("/ambientes"),
         api.get("/reportes"),
+        api.get("/usuario"), 
       ]);
 
       if (!activo) return;
 
       const errores = [];
 
-      // Habitaciones
+
       if (resultados[0].status === "fulfilled") {
-        const respuestaHabitaciones = resultados[0].value.data;
-
-        // Mostrar en la consola lo que responde Laravel.
-        console.log("Respuesta de habitaciones:", respuestaHabitaciones);
-
-        const listaHabitaciones = obtenerLista(respuestaHabitaciones, [
-          "habitaciones",
-          "habitacion",
-        ]);
-
-        console.log("Lista de habitaciones procesada:", listaHabitaciones);
-
-        setHabitaciones(listaHabitaciones);
+        setHabitaciones(obtenerLista(resultados[0].value.data, ["habitaciones", "habitacion"]));
       } else {
-        console.error(
-          "Error al consultar habitaciones:",
-          resultados[0].reason?.response?.data || resultados[0].reason,
-        );
-
         errores.push("No se pudieron cargar las habitaciones.");
       }
 
 
       if (resultados[1].status === "fulfilled") {
-        setAmbientes(
-          obtenerLista(resultados[1].value.data, ["ambientes", "ambiente"]),
-        );
+        setAmbientes(obtenerLista(resultados[1].value.data, ["ambientes", "ambiente"]));
       } else {
         errores.push("No se pudieron cargar los ambientes.");
       }
 
+
       if (resultados[2].status === "fulfilled") {
-        setReportes(
-          obtenerLista(resultados[2].value.data, ["reportes", "reporte"]),
-        );
+        setReportes(obtenerLista(resultados[2].value.data, ["reportes", "reporte"]));
       } else {
         errores.push("No se pudieron cargar los reportes.");
+      }
+
+
+      if (resultados[3]?.status === "fulfilled") {
+        const listaUsuarios = obtenerLista(resultados[3].value.data, ["usuarios", "usuario", "datos"]);
+        
+        const soloOperarios = listaUsuarios.filter(usuario => {
+
+          const rol = String(usuario.id_rol || usuario.rol_id || usuario.rol || usuario.Rol);
+          
+
+          const nombreRol = String(usuario.rol?.nombre || usuario.rol?.name || "").toLowerCase();
+          
+  
+          return rol === "3" || nombreRol.includes("operario");
+        });
+
+        setOperarios(soloOperarios);
+      } else {
+        errores.push("No se pudieron cargar los usuarios/operarios.");
       }
 
       setErrorOpciones(errores.join(" "));
@@ -267,10 +276,20 @@ function OrdenesTrabajo() {
   function cambiarCampo(evento) {
     const { name, value } = evento.target;
 
-    setFormulario((anterior) => ({
-      ...anterior,
-      [name]: value,
-    }));
+    setFormulario((anterior) => {
+      const nuevo = { ...anterior, [name]: value };
+
+      // Limpia el ambiente si selecciona habitación
+      if (name === "habitaciones_No_habitacion" && value !== "") {
+        nuevo.ambientes_id_ambiente = "";
+      } 
+      // Limpia la habitación si selecciona ambiente
+      else if (name === "ambientes_id_ambiente" && value !== "") {
+        nuevo.habitaciones_No_habitacion = "";
+      }
+
+      return nuevo;
+    });
   }
 
   function abrirFormularioNuevo() {
@@ -285,55 +304,31 @@ function OrdenesTrabajo() {
     setOrdenEnEdicion(idOrden(orden));
 
     setFormulario({
-      descripcion: leerCampo(
-        orden,
-        "descripcion",
-        "Descripcion",
-        "Descripción",
-      ),
-
-      prioridad: leerCampo(orden, "prioridad", "Prioridad") || "Media",
+      descripcion: leerCampo(orden, "descripcion", "Descripcion", "Descripción"),
+      prioridad: (leerCampo(orden, "prioridad", "Prioridad") || "Media").toLowerCase(),
 
       reportes_IdReporte: String(
         leerCampo(orden, "reportes_IdReporte", "reporte_id") ||
-          leerCampo(
-            orden.reporte || orden.Reporte,
-            "IdReporte",
-            "idReporte",
-            "id",
-          ) ||
+          leerCampo(orden.reporte || orden.Reporte, "IdReporte", "idReporte", "id") ||
           "",
       ),
 
       habitaciones_No_habitacion: String(
-        leerCampo(
-          orden,
-          "habitaciones_No_habitacion",
-          "No_habitacion",
-          "no_habitacion",
-        ) ||
-          leerCampo(
-            orden.habitacion || orden.Habitacion,
-            "No_habitacion",
-            "no_habitacion",
-            "id",
-          ) ||
+        leerCampo(orden, "habitaciones_No_habitacion", "No_habitacion", "no_habitacion") ||
+          leerCampo(orden.habitacion || orden.Habitacion, "No_habitacion", "no_habitacion", "id") ||
           "",
       ),
 
       ambientes_id_ambiente: String(
-        leerCampo(
-          orden,
-          "ambientes_id_ambiente",
-          "ambiente_id",
-          "id_ambiente",
-        ) ||
-          leerCampo(
-            orden.ambiente || orden.Ambiente,
-            "id_ambiente",
-            "IdAmbiente",
-            "id",
-          ) ||
+        leerCampo(orden, "ambientes_id_ambiente", "ambiente_id", "id_ambiente") ||
+          leerCampo(orden.ambiente || orden.Ambiente, "id_ambiente", "IdAmbiente", "id") ||
+          "",
+      ),
+
+      // Cargar operario
+      usuarios_id_usuario: String(
+        leerCampo(orden, "usuarios_id_usuario", "usuario_id", "operario_id", "id_usuario") ||
+          leerCampo(orden.usuario || orden.Usuario || orden.operario, "id_usuario", "idUsuario", "id") ||
           "",
       ),
 
@@ -368,20 +363,22 @@ function OrdenesTrabajo() {
       descripcion: formulario.descripcion.trim(),
       prioridad: formulario.prioridad,
       reportes_IdReporte: Number(formulario.reportes_IdReporte),
-      habitaciones_No_habitacion: Number(formulario.habitaciones_No_habitacion),
-      ambientes_id_ambiente: Number(formulario.ambientes_id_ambiente),
+      
+
+      habitaciones_No_habitacion: formulario.habitaciones_No_habitacion ? Number(formulario.habitaciones_No_habitacion) : null,
+      ambientes_id_ambiente: formulario.ambientes_id_ambiente ? Number(formulario.ambientes_id_ambiente) : null,
+      usuarios_id_usuario: formulario.usuarios_id_usuario ? Number(formulario.usuarios_id_usuario) : null,
+      
       estado: formulario.estado,
     };
 
     try {
       if (ordenEnEdicion !== null && ordenEnEdicion !== "") {
         await api.put(`/ordenes/${ordenEnEdicion}`, datosOrden);
-
         setTipoMensaje("success");
         setMensaje("La orden se actualizó correctamente.");
       } else {
         await api.post("/ordenes", datosOrden);
-
         setTipoMensaje("success");
         setMensaje("La orden se creó correctamente.");
       }
@@ -389,11 +386,9 @@ function OrdenesTrabajo() {
       setMostrarFormulario(false);
       setOrdenEnEdicion(null);
       setFormulario(formularioVacio);
-
       setActualizarLista((valor) => valor + 1);
     } catch (errorGuardado) {
       setTipoMensaje("danger");
-
       setMensaje(
         mensajeError(
           errorGuardado,
@@ -467,7 +462,15 @@ function OrdenesTrabajo() {
       "Descripcion",
     );
 
-    return tipo ? `Reporte ${id} - ${tipo}` : `Reporte ${id}`;
+    return tipo ? `Reporte ${id}\n${tipo}` : `Reporte ${id}`;
+  }
+
+  function nombreOperario(id) {
+    const operario = operarios.find(
+      (item) => String(idOperario(item)) === String(id),
+    );
+    if (!operario) return id || "—";
+    return leerCampo(operario, "nombre", "nombres", "name", "Nombre") || `Operario ${id}`;
   }
 
   return (
@@ -477,7 +480,6 @@ function OrdenesTrabajo() {
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <div>
             <h3 className="text-success mb-1">Órdenes de trabajo</h3>
-
             <p className="text-secondary mb-0">
               Consulta, crea y edita las órdenes desde este apartado.
             </p>
@@ -515,8 +517,7 @@ function OrdenesTrabajo() {
         {/* Errores de las consultas al backend */}
         {errorOpciones && (
           <div className="alert alert-warning" role="alert">
-            {errorOpciones} Verifica que existan las rutas GET
-            /api/habitaciones, GET /api/ambientes y GET /api/reportes.
+            {errorOpciones} Verifica que existan las rutas de las opciones.
           </div>
         )}
 
@@ -567,11 +568,9 @@ function OrdenesTrabajo() {
                       onChange={cambiarCampo}
                       required
                     >
-                      <option value="Baja">Baja</option>
-
-                      <option value="Media">Media</option>
-
-                      <option value="Alta">Alta</option>
+                      <option value="baja">Baja</option>
+                      <option value="media">Media</option>
+                      <option value="alta">Alta</option>
                     </select>
                   </div>
 
@@ -640,7 +639,7 @@ function OrdenesTrabajo() {
                       className="form-select"
                       value={formulario.habitaciones_No_habitacion}
                       onChange={cambiarCampo}
-                      required
+                      required={!formulario.ambientes_id_ambiente} 
                       disabled={cargandoOpciones}
                     >
                       <option value="">
@@ -688,7 +687,7 @@ function OrdenesTrabajo() {
                       className="form-select"
                       value={formulario.ambientes_id_ambiente}
                       onChange={cambiarCampo}
-                      required
+                      required={!formulario.habitaciones_No_habitacion} 
                       disabled={cargandoOpciones}
                     >
                       <option value="">
@@ -727,6 +726,41 @@ function OrdenesTrabajo() {
                     </select>
                   </div>
 
+                  {/* Desplegable de operarios */}
+                  <div className="col-12 col-md-6">
+                    <label htmlFor="usuarios_id_usuario" className="form-label">
+                      Operario asignado
+                    </label>
+
+                    <select
+                      id="usuarios_id_usuario"
+                      name="usuarios_id_usuario"
+                      className="form-select"
+                      value={formulario.usuarios_id_usuario}
+                      onChange={cambiarCampo}
+                      required
+                      disabled={cargandoOpciones}
+                    >
+                      <option value="">
+                        {cargandoOpciones
+                          ? "Cargando operarios..."
+                          : operarios.length === 0 
+                            ? "No hay operarios disponibles" 
+                            : "Selecciona un operario"}
+                      </option>
+
+                      {operarios.map((operario, index) => {
+                        const id = idOperario(operario) || index;
+                        const nombre = leerCampo(operario, "nombre", "nombres", "name", "Nombre") || `Operario ${id}`;
+                        return (
+                          <option key={id} value={id} disabled={id === ""}>
+                            {nombre}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+
                   {/* Estado */}
                   <div className="col-12 col-md-6">
                     <label htmlFor="estado" className="form-label">
@@ -744,9 +778,7 @@ function OrdenesTrabajo() {
                       }
                     >
                       <option value="Pendiente">Pendiente</option>
-
                       <option value="EnProceso">En proceso</option>
-
                       <option value="Finalizado">Finalizado</option>
                     </select>
 
@@ -821,9 +853,9 @@ function OrdenesTrabajo() {
                       <th>Reporte</th>
                       <th>Habitación</th>
                       <th>Ambiente</th>
+                      <th>Operario</th>
                       <th>Estado</th>
-
-                      {puedeGestionar && <th>Acciones</th>}
+                      {puedeGestionar ? <th>Acciones</th> : null}
                     </tr>
                   </thead>
 
@@ -854,6 +886,15 @@ function OrdenesTrabajo() {
                         "ambiente_id",
                         "id_ambiente",
                       );
+
+                      const operarioId =
+                        leerCampo(orden, "usuarios_id_usuario", "usuario_id", "operario_id") ||
+                        leerCampo(
+                          orden.usuario || orden.Usuario || orden.operario,
+                          "id_usuario",
+                          "idUsuario",
+                          "id",
+                        );
 
                       return (
                         <tr key={id || index}>
@@ -887,12 +928,14 @@ function OrdenesTrabajo() {
 
                           <td>{nombreAmbiente(ambienteId)}</td>
 
+                          <td>{nombreOperario(operarioId)}</td>
+
                           <td>
                             {leerCampo(orden, "estado", "status", "Estado") ||
                               "—"}
                           </td>
 
-                          {puedeGestionar && (
+                          {puedeGestionar ? (
                             <td>
                               <button
                                 type="button"
@@ -902,7 +945,7 @@ function OrdenesTrabajo() {
                                 Editar
                               </button>
                             </td>
-                          )}
+                          ) : null}
                         </tr>
                       );
                     })}
