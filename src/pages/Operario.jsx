@@ -3,6 +3,7 @@ import izquierda from '../assets/izquierda.jpeg'
 import imagenOperario from '../assets/imagenOperario.jpeg'
 import fondo2 from '../assets/fondo2.jpeg'
 import { Link, useNavigate } from 'react-router-dom'
+import api from '../services/api'
 
 function Operario({ cerrandoSesion }) {
     const navigate = useNavigate()
@@ -16,8 +17,137 @@ function Operario({ cerrandoSesion }) {
     const [nuevoTelefono, setNuevoTelefono] = useState('')
     const [nuevaContrasena, setNuevaContrasena] = useState('')
     const [confirmarContrasena, setConfirmarContrasena] = useState('')
-    const usuario = JSON.parse(localStorage.getItem('usuario'))
+    const [usuario, setUsuario] = useState(() =>
+        JSON.parse(localStorage.getItem('usuario') || '{}')
+    )
+    const [mensaje, setMensaje] = useState('')
+    const [tipoMensaje, setTipoMensaje] = useState('')
+    const [guardando, setGuardando] = useState(false)
 
+    const guardarCorreo = async () => {
+        setMensaje('')
+        if (!contrasenaActual.trim() || !nuevoCorreo.trim()) {
+            setTipoMensaje('danger')
+            setMensaje('Debes ingresar la contraseña actual y el nuevo correo.')
+            return
+        }
+        setGuardando(true)
+
+        try {
+            const respuesta = await api.put('/perfil/correo', {
+                Contrasena: contrasenaActual,
+                Correo: nuevoCorreo
+            })
+
+            const usuarioActualizado = {
+                ...usuario,
+                Correo: respuesta.data.Correo || nuevoCorreo
+            }
+
+            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
+            setUsuario(usuarioActualizado)
+
+            setTipoMensaje('success')
+            setMensaje(respuesta.data.mensaje || 'Correo actualizado correctamente.')
+
+            setContrasenaActual('')
+            setNuevoCorreo('')
+        } catch (error) {
+            const errores = error.response?.data?.errors
+
+            const mensajeError =
+                error.response?.data?.mensaje ||
+                error.response?.data?.message ||
+                (errores ? Object.values(errores).flat()[0] : null) ||
+                'No se pudo actualizar el correo'
+
+            setTipoMensaje('danger')
+            setMensaje(mensajeError)
+        } finally {
+            setGuardando(false)
+        }
+    }
+
+    const guardarTelefono = async () => {
+        setMensaje('')
+        if (!contrasenaActual.trim() || !nuevoTelefono.trim()) {
+            setTipoMensaje('danger')
+            setMensaje('Debes ingresar la contraseña actual y el nuevo Telefono.')
+            return
+        }
+        setGuardando(true)
+
+        try {
+            const respuesta = await api.put('/perfil/telefono', {
+                Contrasena: contrasenaActual,
+                Telefono: nuevoTelefono
+            })
+
+            const usuarioActualizado = {
+                ...usuario,
+                Telefono: respuesta.data.Telefono || nuevoTelefono
+            }
+
+            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
+            setUsuario(usuarioActualizado)
+
+            setTipoMensaje('success')
+            setMensaje(respuesta.data.mensaje || 'Telefono actualizado correctamente.')
+
+            setContrasenaActual('')
+            setNuevoTelefono('')
+        } catch (error) {
+            const errores = error.response?.data?.errors
+
+            const mensajeError =
+                error.response?.data?.mensaje ||
+                error.response?.data?.message ||
+                (errores ? Object.values(errores).flat()[0] : null) ||
+                'No se pudo actualizar el telefono'
+
+            setTipoMensaje('danger')
+            setMensaje(mensajeError)
+        } finally {
+            setGuardando(false)
+        }
+    }
+
+    const guardarContrasena = async () => {
+        setMensaje('')
+        if (!contrasenaActual.trim() || !nuevaContrasena.trim()) {
+            setTipoMensaje('danger')
+            setMensaje('Debes ingresar la contraseña actual y el nueva Contraseña.')
+            return
+        }
+        setGuardando(true)
+
+        try {
+            const respuesta = await api.put('/perfil/contrasena', {
+                Contrasena: contrasenaActual,
+                NuevaContrasena: nuevaContrasena
+            })
+
+
+            setTipoMensaje('success')
+            setMensaje(respuesta.data.mensaje || 'Contraseña actualizado correctamente.')
+
+            setContrasenaActual('')
+            setNuevaContrasena('')
+        } catch (error) {
+            const errores = error.response?.data?.errors
+
+            const mensajeError =
+                error.response?.data?.mensaje ||
+                error.response?.data?.message ||
+                (errores ? Object.values(errores).flat()[0] : null) ||
+                'No se pudo actualizar el contraseña'
+
+            setTipoMensaje('danger')
+            setMensaje(mensajeError)
+        } finally {
+            setGuardando(false)
+        }
+    }
 
     return (
         <div className="container-fluid p-0">
@@ -122,10 +252,18 @@ function Operario({ cerrandoSesion }) {
                                                 <button type='button' className='btn btn-success w-100' onClick={() => setTipoCambio('contrasena')}>
                                                     Cambiar Contraseña
                                                 </button>
+                                                <button type='button' className='btn btn-success w-100 mt-2' onClick={() => setTipoCambio('imagen')}>
+                                                    Cambiar imagen
+                                                </button>
                                             </>
                                         )}
                                         {tipoCambio === 'correo' && (
                                             <>
+                                                {mensaje && (
+                                                    <div className={`alert alert-${tipoMensaje}`} role='alert'>
+                                                        {mensaje}
+                                                    </div>
+                                                )}
                                                 <label className='form-label'>
                                                     Contraseña actual
                                                 </label>
@@ -134,20 +272,77 @@ function Operario({ cerrandoSesion }) {
                                                     Nuevo correo
                                                 </label>
                                                 <input type="email" className='form-control mb-3' value={nuevoCorreo} onChange={(e) => setNuevoCorreo(e.target.value)} placeholder='Ingresa tu nuevo correo' />
-                                                <button type='button' className='btn btn-success w-100'>
-                                                    Guardar cambios
+                                                <button type='button' className='btn btn-success w-100' onClick={guardarCorreo} disabled={guardando}>
+                                                    {guardando ? 'Guardando.....' : 'Guardar cambios'}
                                                 </button>
                                                 <button type='button' className='btn btn-secondary w-100 mt-2' onClick={() => {
                                                     setTipoCambio('')
                                                     setContrasenaActual('')
                                                     setNuevoCorreo('')
+                                                    setMensaje('')
+                                                    setTipoMensaje('')
+                                                }}>
+                                                    Volver
+                                                </button>
+                                            </>
+                                        )}
+                                        {tipoCambio === 'telefono' && (
+                                            <>
+                                                {mensaje && (
+                                                    <div className={`alert alert-${tipoMensaje}`} role='alert'>
+                                                        {mensaje}
+                                                    </div>
+                                                )}
+                                                <label className='form-label'>
+                                                    Contraseña actual
+                                                </label>
+                                                <input type="password" className='form-control mb-3' value={contrasenaActual} onChange={(e) => setContrasenaActual(e.target.value)} placeholder='Ingresa tu contraseña actual' />
+                                                <label className='form-label'>
+                                                    Nuevo telefono
+                                                </label>
+                                                <input type="tel" className='form-control mb-3' value={nuevoTelefono} onChange={(e) => setNuevoTelefono(e.target.value)} placeholder='Ingresa tu nuevo telefono' />
+                                                <button type='button' className='btn btn-success w-100' onClick={guardarTelefono} disabled={guardando}>
+                                                    {guardando ? 'Guardando.....' : 'Guardar cambios'}
+                                                </button>
+                                                <button type='button' className='btn btn-secondary w-100 mt-2' onClick={() => {
+                                                    setTipoCambio('')
+                                                    setContrasenaActual('')
+                                                    setNuevoTelefono('')
+                                                    setMensaje('')
+                                                    setTipoMensaje('')
                                                 }}>
                                                     Volver
                                                 </button>
                                             </>
                                         )}
                                         {tipoCambio === 'contrasena' && (
-                                            <p></p>
+                                            <>
+                                                {mensaje && (
+                                                    <div className={`alert alert-${tipoMensaje}`} role='alert'>
+                                                        {mensaje}
+                                                    </div>
+                                                )}
+                                                <label className='form-label'>
+                                                    Contraseña actual
+                                                </label>
+                                                <input type="password" className='form-control mb-3' value={contrasenaActual} onChange={(e) => setContrasenaActual(e.target.value)} placeholder='Ingresa tu contraseña actual' />
+                                                <label className='form-label'>
+                                                    Nueva Contraseña
+                                                </label>
+                                                <input type="password" className='form-control mb-3' value={nuevaContrasena} onChange={(e) => setNuevaContrasena(e.target.value)} placeholder='Ingresa tu nueva contraseña' />
+                                                <button type='button' className='btn btn-success w-100' onClick={guardarContrasena} disabled={guardando}>
+                                                    {guardando ? 'Guardando.....' : 'Guardar cambios'}
+                                                </button>
+                                                <button type='button' className='btn btn-secondary w-100 mt-2' onClick={() => {
+                                                    setTipoCambio('')
+                                                    setContrasenaActual('')
+                                                    setNuevaContrasena('')
+                                                    setMensaje('')
+                                                    setTipoMensaje('')
+                                                }}>
+                                                    Volver
+                                                </button>
+                                            </>
                                         )}
                                     </div>
                                     <div className='modal-footer'>
