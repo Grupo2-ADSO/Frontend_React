@@ -9,7 +9,7 @@ const formularioVacio = {
   habitaciones_No_habitacion: "",
   ambientes_id_ambiente: "",
   usuarios_id_usuario: "", 
-  estado: "pendiente",
+  estado: "Pendiente", 
 };
 
 function leerCampo(registro, ...campos) {
@@ -99,7 +99,7 @@ function idOrden(orden) {
 
 
 function idOperario(operario) {
-  return leerCampo(operario, "idUsuario", "id_usuario", "id");
+  return leerCampo(operario, "IdUsuario", "idUsuario", "id_usuario", "id");
 }
 
 function mensajeError(error, textoPredeterminado) {
@@ -148,7 +148,7 @@ function OrdenesTrabajo() {
   const [habitaciones, setHabitaciones] = useState([]);
   const [ambientes, setAmbientes] = useState([]);
   const [reportes, setReportes] = useState([]);
-  const [operarios, setOperarios] = useState([]); // Estado para operarios
+  const [operarios, setOperarios] = useState([]);
 
   const [cargando, setCargando] = useState(true);
   const [cargandoOpciones, setCargandoOpciones] = useState(true);
@@ -221,13 +221,11 @@ function OrdenesTrabajo() {
 
       const errores = [];
 
-
       if (resultados[0].status === "fulfilled") {
         setHabitaciones(obtenerLista(resultados[0].value.data, ["habitaciones", "habitacion"]));
       } else {
         errores.push("No se pudieron cargar las habitaciones.");
       }
-
 
       if (resultados[1].status === "fulfilled") {
         setAmbientes(obtenerLista(resultados[1].value.data, ["ambientes", "ambiente"]));
@@ -235,25 +233,18 @@ function OrdenesTrabajo() {
         errores.push("No se pudieron cargar los ambientes.");
       }
 
-
       if (resultados[2].status === "fulfilled") {
         setReportes(obtenerLista(resultados[2].value.data, ["reportes", "reporte"]));
       } else {
         errores.push("No se pudieron cargar los reportes.");
       }
 
-
       if (resultados[3]?.status === "fulfilled") {
         const listaUsuarios = obtenerLista(resultados[3].value.data, ["usuarios", "usuario", "datos"]);
         
         const soloOperarios = listaUsuarios.filter(usuario => {
-
           const rol = String(usuario.id_rol || usuario.rol_id || usuario.rol || usuario.Rol);
-          
-
           const nombreRol = String(usuario.rol?.nombre || usuario.rol?.name || "").toLowerCase();
-          
-  
           return rol === "3" || nombreRol.includes("operario");
         });
 
@@ -279,11 +270,9 @@ function OrdenesTrabajo() {
     setFormulario((anterior) => {
       const nuevo = { ...anterior, [name]: value };
 
-      // Limpia el ambiente si selecciona habitación
       if (name === "habitaciones_No_habitacion" && value !== "") {
         nuevo.ambientes_id_ambiente = "";
       } 
-      // Limpia la habitación si selecciona ambiente
       else if (name === "ambientes_id_ambiente" && value !== "") {
         nuevo.habitaciones_No_habitacion = "";
       }
@@ -325,10 +314,10 @@ function OrdenesTrabajo() {
           "",
       ),
 
-      // Cargar operario
+
       usuarios_id_usuario: String(
-        leerCampo(orden, "usuarios_id_usuario", "usuario_id", "operario_id", "id_usuario") ||
-          leerCampo(orden.usuario || orden.Usuario || orden.operario, "id_usuario", "idUsuario", "id") ||
+        leerCampo(orden, "usuario_IdUsuario", "usuarios_id_usuario", "usuario_id", "operario_id") ||
+          leerCampo(orden.usuario || orden.Usuario || orden.operario, "IdUsuario", "id_usuario", "idUsuario", "id") ||
           "",
       ),
 
@@ -364,10 +353,9 @@ function OrdenesTrabajo() {
       prioridad: formulario.prioridad,
       reportes_IdReporte: Number(formulario.reportes_IdReporte),
       
-
       habitaciones_No_habitacion: formulario.habitaciones_No_habitacion ? Number(formulario.habitaciones_No_habitacion) : null,
       ambientes_id_ambiente: formulario.ambientes_id_ambiente ? Number(formulario.ambientes_id_ambiente) : null,
-      usuarios_id_usuario: formulario.usuarios_id_usuario ? Number(formulario.usuarios_id_usuario) : null,
+      usuario_IdUsuario: formulario.usuarios_id_usuario ? Number(formulario.usuarios_id_usuario) : null,
       
       estado: formulario.estado,
     };
@@ -465,18 +453,18 @@ function OrdenesTrabajo() {
     return tipo ? `Reporte ${id}\n${tipo}` : `Reporte ${id}`;
   }
 
+  // CORRECCIÓN: Se agregó "Nombre" con 'N' mayúscula
   function nombreOperario(id) {
     const operario = operarios.find(
       (item) => String(idOperario(item)) === String(id),
     );
     if (!operario) return id || "—";
-    return leerCampo(operario, "nombre", "nombres", "name", "Nombre") || `Operario ${id}`;
+    return leerCampo(operario, "Nombre", "nombre", "nombres", "name") || `Operario ${id}`;
   }
 
   return (
     <LayoutPerfil titulo="Órdenes de trabajo" enlaces={enlaces}>
       <div className="container-fluid px-0">
-        {/* Encabezado y botones principales */}
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <div>
             <h3 className="text-success mb-1">Órdenes de trabajo</h3>
@@ -507,21 +495,18 @@ function OrdenesTrabajo() {
           </div>
         </div>
 
-        {/* Mensajes de guardado */}
         {mensaje && (
           <div className={`alert alert-${tipoMensaje}`} role="alert">
             {mensaje}
           </div>
         )}
 
-        {/* Errores de las consultas al backend */}
         {errorOpciones && (
           <div className="alert alert-warning" role="alert">
             {errorOpciones} Verifica que existan las rutas de las opciones.
           </div>
         )}
 
-        {/* Formulario para crear y editar */}
         {mostrarFormulario && puedeGestionar && (
           <div className="card shadow-sm mb-4">
             <div className="card-header bg-success text-white">
@@ -535,7 +520,6 @@ function OrdenesTrabajo() {
             <div className="card-body">
               <form onSubmit={guardarOrden}>
                 <div className="row g-3">
-                  {/* Descripción */}
                   <div className="col-12">
                     <label htmlFor="descripcion" className="form-label">
                       Descripción del trabajo
@@ -554,7 +538,6 @@ function OrdenesTrabajo() {
                     />
                   </div>
 
-                  {/* Prioridad */}
                   <div className="col-12 col-md-6">
                     <label htmlFor="prioridad" className="form-label">
                       Prioridad
@@ -574,7 +557,6 @@ function OrdenesTrabajo() {
                     </select>
                   </div>
 
-                  {/* Reporte */}
                   <div className="col-12 col-md-6">
                     <label htmlFor="reportes_IdReporte" className="form-label">
                       Reporte relacionado
@@ -624,7 +606,6 @@ function OrdenesTrabajo() {
                     </small>
                   </div>
 
-                  {/* Desplegable de habitaciones */}
                   <div className="col-12 col-md-6">
                     <label
                       htmlFor="habitaciones_No_habitacion"
@@ -672,7 +653,6 @@ function OrdenesTrabajo() {
                     </select>
                   </div>
 
-                  {/* Desplegable de ambientes */}
                   <div className="col-12 col-md-6">
                     <label
                       htmlFor="ambientes_id_ambiente"
@@ -726,7 +706,6 @@ function OrdenesTrabajo() {
                     </select>
                   </div>
 
-                  {/* Desplegable de operarios */}
                   <div className="col-12 col-md-6">
                     <label htmlFor="usuarios_id_usuario" className="form-label">
                       Operario asignado
@@ -749,11 +728,11 @@ function OrdenesTrabajo() {
                             : "Selecciona un operario"}
                       </option>
 
-                      {operarios.map((operario, index) => {
-                        const id = idOperario(operario) || index;
-                        const nombre = leerCampo(operario, "nombre", "nombres", "name", "Nombre") || `Operario ${id}`;
+                      {operarios.map((operario) => {
+                        const id = idOperario(operario); 
+                        const nombre = leerCampo(operario, "Nombre", "nombre", "nombres", "name") || `Operario ${id}`;
                         return (
-                          <option key={id} value={id} disabled={id === ""}>
+                          <option key={id} value={id} disabled={id === "" || id === undefined}>
                             {nombre}
                           </option>
                         );
@@ -761,7 +740,6 @@ function OrdenesTrabajo() {
                     </select>
                   </div>
 
-                  {/* Estado */}
                   <div className="col-12 col-md-6">
                     <label htmlFor="estado" className="form-label">
                       Estado
@@ -790,7 +768,6 @@ function OrdenesTrabajo() {
                   </div>
                 </div>
 
-                {/* Botones del formulario */}
                 <div className="d-flex flex-wrap gap-2 mt-4">
                   <button
                     type="submit"
@@ -818,7 +795,6 @@ function OrdenesTrabajo() {
           </div>
         )}
 
-        {/* Tabla de órdenes */}
         <div className="card shadow-sm">
           <div className="card-header bg-white">
             <h5 className="mb-0">Órdenes registradas</h5>
@@ -887,10 +863,12 @@ function OrdenesTrabajo() {
                         "id_ambiente",
                       );
 
+                      
                       const operarioId =
-                        leerCampo(orden, "usuarios_id_usuario", "usuario_id", "operario_id") ||
+                        leerCampo(orden, "usuario_IdUsuario", "usuarios_id_usuario", "usuario_id", "operario_id") ||
                         leerCampo(
                           orden.usuario || orden.Usuario || orden.operario,
+                          "IdUsuario",
                           "id_usuario",
                           "idUsuario",
                           "id",
