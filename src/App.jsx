@@ -5,7 +5,7 @@ import Supervisor from "./pages/Supervisor";
 import Operario from "./pages/Operario";
 import OrdenesTrabajo from "./pages/OrdenesTrabajo";
 import Evidencias from "./pages/Evidencias";
-import HistorialOperario from "./pages/HistorialOperario";
+import HistorialOperario from "./pages/Historial";
 import GestionRecurso from "./pages/GestionRecurso";
 import InformacionSistema from "./pages/InformacionSistema";
 import RequireAuth from "./components/RequireAuth";
@@ -32,7 +32,7 @@ function App() {
           path="/admin/ordenes"
           element={<Navigate to="/ordenes" replace />}
         />
-        
+
         <Route
           path="/admin/:recurso"
           element={
