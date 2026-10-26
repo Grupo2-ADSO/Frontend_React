@@ -92,19 +92,19 @@ function OrdenesTrabajo() {
   const enlacesPorRol = {
     1: [
       { texto: "Inicio", ruta: "/admin" },
-      { texto: "Órdenes de trabajo", ruta: "/ordenes" },
+      { texto: "Ordenes de trabajo", ruta: "/ordenes" },
       { texto: "Usuarios", ruta: "/admin/usuario" },
       { texto: "Reportes", ruta: "/admin/reportes" },
       { texto: "Historial", ruta: "/historial" },
     ],
     2: [
       { texto: "Inicio", ruta: "/supervisor" },
-      { texto: "Órdenes de trabajo", ruta: "/ordenes" },
+      { texto: "Ordenes de trabajo", ruta: "/ordenes" },
       { texto: "Evidencias", ruta: "/evidencias" },
     ],
     3: [
       { texto: "Inicio", ruta: "/operario" },
-      { texto: "Órdenes de trabajo", ruta: "/ordenes" },
+      { texto: "Ordenes de trabajo", ruta: "/ordenes" },
       { texto: "Evidencias", ruta: "/evidencias" },
       { texto: "Historial", ruta: "/historial" },
     ],

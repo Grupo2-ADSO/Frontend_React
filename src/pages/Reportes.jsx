@@ -52,7 +52,7 @@ function formatearFecha(fechaBD) {
 function Reportes() {
   const rol = Number(localStorage.getItem("rol"));
 
-  // Enlaces por rol
+
   let enlaces = [];
   if (rol === 1 || rol === 2) {
     enlaces = [
