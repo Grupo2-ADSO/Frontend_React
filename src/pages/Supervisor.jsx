@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
 import fondo2 from '../assets/fondo2.jpeg'
 import { Link, useNavigate } from 'react-router-dom'
@@ -19,6 +19,26 @@ function Supervisor({ cerrandoSesion }) {
     const [usuario, setUsuario] = useState(() =>
         JSON.parse(localStorage.getItem('usuario') || '{}')
     )
+
+    useEffect(() => {
+        const cargarPerfil = async () => {
+            try {
+                const respuesta = await api.get('/perfil')
+                const usuarioActualizado = respuesta.data.usuario
+
+                localStorage.setItem(
+                    'usuario',
+                    JSON.stringify(usuarioActualizado)
+                )
+
+                setUsuario(usuarioActualizado)
+            } catch (error) {
+                console.error('No se pudo actualizar el perfil:', error)
+            }
+        }
+
+        cargarPerfil()
+    }, [pagina])
 
     const fotoPerfil = usuario.FotoPerfil
         ? `http://127.0.0.1:8000/storage/${usuario.FotoPerfil}`
@@ -45,16 +65,11 @@ function Supervisor({ cerrandoSesion }) {
                 Correo: nuevoCorreo
             })
 
-            const usuarioActualizado = {
-                ...usuario,
-                Correo: respuesta.data.Correo || nuevoCorreo
-            }
-
-            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
-            setUsuario(usuarioActualizado)
-
             setTipoMensaje('success')
-            setMensaje(respuesta.data.mensaje || 'Correo actualizado correctamente.')
+            setMensaje(
+                respuesta.data.mensaje ||
+                'Te enviamos un enlace para verificar tu nuevo correo'
+            )
 
             setContrasenaActual('')
             setNuevoCorreo('')
@@ -462,6 +477,11 @@ function Supervisor({ cerrandoSesion }) {
                                                 <button type='button' className='btn btn-success w-100' onClick={guardarFoto} disabled={guardando || !nuevaFoto}>
                                                     {guardando ? 'Guardando......' : 'Guardando foto'}
                                                 </button>
+                                                {usuario.FotoPerfil && (
+                                                    <button type='button' className='btn btn-danger w-100 mt-2' onClick={eliminarFoto} disabled={guardando}>
+                                                        {guardando ? 'Procesando....' : 'Quitar foto'}
+                                                    </button>
+                                                )}
                                                 <button type='button' className='btn btn-secondary w-100 mt-2' onClick={() => {
                                                     setTipoCambio('')
                                                     setNuevaFoto(null)
