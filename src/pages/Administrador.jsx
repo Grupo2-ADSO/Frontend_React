@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import izquierda from '../assets/izquierda.jpeg'
-import Sergio from '../assets/Sergio.jpeg'
 import fondo2 from '../assets/fondo2.jpeg'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../services/api'
@@ -20,9 +19,36 @@ function Administrador({ cerrandoSesion }) {
     const [usuario, setUsuario] = useState(() =>
         JSON.parse(localStorage.getItem('usuario') || '{}')
     )
+
+    useEffect(() => {
+        const cargarPerfil = async () => {
+            try {
+                const respuesta = await api.get('/perfil')
+                const usuarioActualizado = respuesta.data.usuario
+
+                localStorage.setItem(
+                    'usuario',
+                    JSON.stringify(usuarioActualizado)
+                )
+
+                setUsuario(usuarioActualizado)
+            } catch (error) {
+                console.error('No se pudo actualizar el perfil:', error)
+            }
+        }
+
+        cargarPerfil()
+    }, [pagina])
+
+    const fotoPerfil = usuario.FotoPerfil
+        ? `http://127.0.0.1:8000/storage/${usuario.FotoPerfil}`
+        : 'http://127.0.0.1:8000/storage/fotos-perfil/predeterminada.jpeg'
+
     const [mensaje, setMensaje] = useState('')
     const [tipoMensaje, setTipoMensaje] = useState('')
     const [guardando, setGuardando] = useState(false)
+    const [nuevaFoto, setNuevaFoto] = useState(null)
+    const [vistaPrevia, setVistaPrevia] = useState('')
 
     const guardarCorreo = async () => {
         setMensaje('')
@@ -39,16 +65,11 @@ function Administrador({ cerrandoSesion }) {
                 Correo: nuevoCorreo
             })
 
-            const usuarioActualizado = {
-                ...usuario,
-                Correo: respuesta.data.Correo || nuevoCorreo
-            }
-
-            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
-            setUsuario(usuarioActualizado)
-
             setTipoMensaje('success')
-            setMensaje(respuesta.data.mensaje || 'Correo actualizado correctamente.')
+            setMensaje(
+                respuesta.data.mensaje ||
+                'Te enviamos un enlace para verificar tu nuevo correo'
+            )
 
             setContrasenaActual('')
             setNuevoCorreo('')
@@ -149,6 +170,93 @@ function Administrador({ cerrandoSesion }) {
         }
     }
 
+    const seleccionarFoto = (evento) => {
+        const archivo = evento.target.files[0]
+
+        if (archivo) {
+            setNuevaFoto(archivo)
+            setVistaPrevia(URL.createObjectURL(archivo))
+        }
+    }
+
+    const guardarFoto = async () => {
+        if (!nuevaFoto) {
+            setTipoMensaje('danger')
+            setMensaje('Primero debes seleccionar una fotografia.')
+            return
+        }
+
+        setGuardando(true)
+        setMensaje('')
+
+        const datos = new FormData()
+        datos.append('FotoPerfil', nuevaFoto)
+
+        try {
+            const respuesta = await api.post('/perfil/foto', datos)
+
+            const usuarioActualizado = {
+                ...usuario,
+                FotoPerfil: respuesta.data.FotoPerfil
+            }
+
+            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
+            setUsuario(usuarioActualizado)
+
+            setTipoMensaje('success')
+            setMensaje(respuesta.data.mensaje || 'Fotografia actualizada correctamente.')
+
+            setNuevaFoto(null)
+            setVistaPrevia('')
+        } catch (error) {
+            const errores = error.response?.data?.errors
+
+            const mensajeError =
+                error.response?.data?.mensaje ||
+                error.response?.data?.message ||
+                (errores ? Object.values(errores).flat()[0] : null) ||
+                'No se puedo guardar esta fotografia.'
+
+            setTipoMensaje('danger')
+            setMensaje(mensajeError)
+        } finally {
+            setGuardando(false)
+        }
+    }
+
+    const eliminarFoto = async () => {
+        setGuardando(true)
+        setMensaje('')
+
+        try {
+            const respuesta = await api.delete('/perfil/foto')
+
+            const usuarioActualizado = {
+                ...usuario,
+                FotoPerfil: respuesta.data.FotoPerfil
+            }
+
+            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
+            setUsuario(usuarioActualizado)
+
+            setNuevaFoto(null)
+            setVistaPrevia('')
+
+            setTipoMensaje('success')
+            setMensaje(respuesta.data.mensaje || 'Foto eliminada correctamente.')
+        } catch (error) {
+            const mensajeError =
+                error.response?.data?.mensaje ||
+                error.response?.data?.message ||
+                'No se pudo eliminar la foto.'
+
+            setTipoMensaje('danger')
+            setMensaje(mensajeError)
+        } finally {
+            setGuardando(false)
+        }
+    }
+
     return (
         <div className="container-fluid p-0">
             <div className='row g-0 min-vh-100'>
@@ -199,7 +307,7 @@ function Administrador({ cerrandoSesion }) {
                                             </span>
                                         </div>
                                         <div className="card-body d-flex flex-column align-items-center text-center p-4">
-                                            <img src={Sergio} className="rounded-circle img-thumbnail mb-3" alt='Foto de perfil' style={{
+                                            <img src={fotoPerfil} className="rounded-circle img-thumbnail mb-3" alt='Foto de perfil' style={{
                                                 width: '180px',
                                                 height: '180px',
                                                 objectFit: 'cover'
@@ -252,6 +360,9 @@ function Administrador({ cerrandoSesion }) {
                                                 </button>
                                                 <button type='button' className='btn btn-success w-100' onClick={() => setTipoCambio('contrasena')}>
                                                     Cambiar Contraseña
+                                                </button>
+                                                <button type='button' className='btn btn-success w-100 mt-2' onClick={() => setTipoCambio('imagen')}>
+                                                    Cambiar imagen
                                                 </button>
                                             </>
                                         )}
@@ -335,6 +446,48 @@ function Administrador({ cerrandoSesion }) {
                                                     setTipoCambio('')
                                                     setContrasenaActual('')
                                                     setNuevaContrasena('')
+                                                    setMensaje('')
+                                                    setTipoMensaje('')
+                                                }}>
+                                                    Volver
+                                                </button>
+                                            </>
+                                        )}
+                                        {tipoCambio === 'imagen' && (
+                                            <>
+                                                {mensaje && (
+                                                    <div className={`alert alert-${tipoMensaje}`} role='alert'>
+                                                        {mensaje}
+                                                    </div>
+                                                )}
+                                                <label className='form-label'>
+                                                    Selecciona tu fotografia
+                                                </label>
+                                                <input type="file" className='form-control mb-3' accept='image/jpeg,image/png,image/webp' onChange={seleccionarFoto} />
+                                                {vistaPrevia && (
+                                                    <img
+                                                        src={vistaPrevia}
+                                                        alt='Vista previa de la fotografía'
+                                                        className='rounded-circle img-thumbnail mb-3'
+                                                        style={{
+                                                            width: '180px',
+                                                            height: '180px',
+                                                            objectFit: 'cover'
+                                                        }}
+                                                    />
+                                                )}
+                                                <button type='button' className='btn btn-success w-100' onClick={guardarFoto} disabled={guardando || !nuevaFoto}>
+                                                    {guardando ? 'Guardando......' : 'Guardando foto'}
+                                                </button>
+                                                {usuario.FotoPerfil && (
+                                                    <button type='button' className='btn btn-danger w-100 mt-2' onClick={eliminarFoto} disabled={guardando}>
+                                                        {guardando ? 'Procesando....' : 'Quitar foto'}
+                                                    </button>
+                                                )}
+                                                <button type='button' className='btn btn-secondary w-100 mt-2' onClick={() => {
+                                                    setTipoCambio('')
+                                                    setNuevaFoto(null)
+                                                    setVistaPrevia('')
                                                     setMensaje('')
                                                     setTipoMensaje('')
                                                 }}>

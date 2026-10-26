@@ -12,6 +12,9 @@ import Reportes from "./pages/Reportes"; // Importación del componente avanzado
 import RequireAuth from "./components/RequireAuth";
 import RequireRole from "./components/RequireRole";
 import CerrarSesion from "./pages/CerrarSesion";
+import Usuarios from "./pages/Usuario";
+import Reportes from "./pages/Reportes";
+import Historial from "./pages/Historial";
 
 function App() {
   return (
@@ -35,6 +38,16 @@ function App() {
           element={<Navigate to="/ordenes" replace />}
         />
 
+        <Route
+          path="/admin/usuario"
+          element={
+            <RequireAuth>
+              <RequireRole roles={[1]}>
+                <Usuarios />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
 
         <Route
           path="/admin/reportes"
@@ -46,7 +59,6 @@ function App() {
             </RequireAuth>
           }
         />
-        
 
         <Route
           path="/admin/:recurso"
@@ -136,7 +148,7 @@ function App() {
             />
           }
         />
-        
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
