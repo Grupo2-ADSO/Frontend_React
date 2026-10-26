@@ -8,13 +8,12 @@ import Evidencias from "./pages/Evidencias";
 import HistorialOperario from "./pages/Historial";
 import GestionRecurso from "./pages/GestionRecurso";
 import InformacionSistema from "./pages/InformacionSistema";
-import Reportes from "./pages/Reportes"; // Importación del componente avanzado de Reportes
 import RequireAuth from "./components/RequireAuth";
 import RequireRole from "./components/RequireRole";
 import CerrarSesion from "./pages/CerrarSesion";
 import Usuarios from "./pages/Usuario";
 import Reportes from "./pages/Reportes";
-import Historial from "./pages/Historial";
+
 
 function App() {
   return (
