@@ -52,7 +52,6 @@ function formatearFecha(fechaBD) {
 function Reportes() {
   const rol = Number(localStorage.getItem("rol"));
 
-
   let enlaces = [];
   if (rol === 1 || rol === 2) {
     enlaces = [
@@ -346,7 +345,6 @@ function Reportes() {
                           "idUsuario",
                         );
 
-                        // Lógica reforzada para nombre del ambiente
                         let textoUbicacion = "—";
                         if (idHab) {
                           textoUbicacion = `Habitación ${idHab}`;

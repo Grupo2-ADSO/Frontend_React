@@ -6,7 +6,7 @@ const formularioVacio = {
   Nombre: "",
   Apellidos: "",
   Correo: "",
-  contrasena: "",
+  Contrasena: "",
   Cedula: "",
   Telefono: "",
   Estado: "Activo",
@@ -117,7 +117,7 @@ function Usuarios() {
       Nombre: leerCampo(user, "Nombre", "nombre", "name"),
       Apellidos: leerCampo(user, "Apellidos", "apellidos"),
       Correo: leerCampo(user, "Correo", "correo", "email"),
-      contrasena: "",
+      Contrasena: "",
       Cedula: leerCampo(user, "Cedula", "cedula"),
       Telefono: leerCampo(user, "Telefono", "telefono"),
       Estado: leerCampo(user, "Estado", "estado", "status") || "Activo",
@@ -137,16 +137,16 @@ function Usuarios() {
       Rol_IdRol: Number(formulario.Rol_IdRol),
     };
 
-    if (usuarioEnEdicion && !datosGuardar.contrasena) {
-      delete datosGuardar.contrasena;
+    if (usuarioEnEdicion && !datosGuardar.Contrasena) {
+      delete datosGuardar.Contrasena;
     }
 
     try {
       if (usuarioEnEdicion) {
-        await api.put(`/usuarios/${usuarioEnEdicion}`, datosGuardar);
+        await api.put(`/usuario/${usuarioEnEdicion}`, datosGuardar);
         setMensaje("Usuario actualizado correctamente.");
       } else {
-        await api.post("/usuarios", datosGuardar);
+        await api.post("/usuario", datosGuardar);
         setMensaje("Usuario creado correctamente.");
       }
       setTipoMensaje("success");
@@ -165,7 +165,7 @@ function Usuarios() {
   async function eliminarUsuario(id) {
     if (!window.confirm("¿Estás seguro de eliminar este usuario?")) return;
     try {
-      await api.delete(`/usuarios/${id}`);
+      await api.delete(`/usuario/${id}`);
       setMensaje("Usuario eliminado.");
       setTipoMensaje("success");
       setActualizarLista((v) => v + 1);
@@ -239,9 +239,9 @@ function Usuarios() {
                     </label>
                     <input
                       type="password"
-                      name="contrasena"
+                      name="Contrasena"
                       className="form-control"
-                      value={formulario.contrasena}
+                      value={formulario.Contrasena}
                       onChange={cambiarCampo}
                       required={!usuarioEnEdicion}
                     />

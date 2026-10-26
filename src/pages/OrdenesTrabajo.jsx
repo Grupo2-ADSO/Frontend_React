@@ -547,7 +547,7 @@ function OrdenesTrabajo() {
                         <option
                           key={idReporte(r)}
                           value={idReporte(r)}
-                        >{`Reporte ${idReporte(r)}`}</option>
+                        >{`Reporte ${(r.Tipo)}`}</option>
                       ))}
                     </select>
                   </div>
@@ -585,7 +585,7 @@ function OrdenesTrabajo() {
                         <option
                           key={idAmbiente(a)}
                           value={idAmbiente(a)}
-                        >{`Ambiente ${idAmbiente(a)}`}</option>
+                        >{`Ambiente ${(a.nombre)}`}</option>
                       ))}
                     </select>
                   </div>

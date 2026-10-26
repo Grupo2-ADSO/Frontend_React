@@ -119,7 +119,7 @@ function Evidencias() {
     if (archivo) formData.append("archivo", archivo);
 
     try {
-      await api.post("/evidencia", formData, {
+      await api.post("/evidencias", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMostrarFormulario(false);
