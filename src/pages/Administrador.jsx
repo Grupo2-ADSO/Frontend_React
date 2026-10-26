@@ -160,8 +160,9 @@ function Administrador({ cerrandoSesion }) {
                     <nav className="nav flex-column gap-2">
                         <Link to="/admin" className="nav-link text-white" >Inicio</Link>
                         <Link to="/ordenes" className="nav-link text-white" >Ordenes de trabajo</Link>
-                        <Link to="/admin/usuario" className="nav-link text-white" >Usarios</Link>
+                        <Link to="/admin/usuario" className="nav-link text-white" >Usuarios</Link>
                         <Link to="/admin/reportes" className="nav-link text-white" >Reportes</Link>
+
                         <a href="#" className="nav-link text-white" onClick={(e) => {
                             e.preventDefault()
                             cerrarPerfil()

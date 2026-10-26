@@ -5,9 +5,10 @@ import Supervisor from "./pages/Supervisor";
 import Operario from "./pages/Operario";
 import OrdenesTrabajo from "./pages/OrdenesTrabajo";
 import Evidencias from "./pages/Evidencias";
-import HistorialOperario from "./pages/HistorialOperario";
+import HistorialOperario from "./pages/Historial";
 import GestionRecurso from "./pages/GestionRecurso";
 import InformacionSistema from "./pages/InformacionSistema";
+import Reportes from "./pages/Reportes"; // Importación del componente avanzado de Reportes
 import RequireAuth from "./components/RequireAuth";
 import RequireRole from "./components/RequireRole";
 import CerrarSesion from "./pages/CerrarSesion";
@@ -28,11 +29,25 @@ function App() {
             </RequireAuth>
           }
         />
+        
         <Route
           path="/admin/ordenes"
           element={<Navigate to="/ordenes" replace />}
         />
+
+
+        <Route
+          path="/admin/reportes"
+          element={
+            <RequireAuth>
+              <RequireRole roles={[1]}>
+                <Reportes />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
         
+
         <Route
           path="/admin/:recurso"
           element={
@@ -81,7 +96,9 @@ function App() {
           path="/ordenes"
           element={
             <RequireAuth>
-              <OrdenesTrabajo />
+              <RequireRole roles={[1, 2, 3]}>
+                <OrdenesTrabajo />
+              </RequireRole>
             </RequireAuth>
           }
         />
@@ -101,7 +118,7 @@ function App() {
           path="/historial"
           element={
             <RequireAuth>
-              <RequireRole roles={[3]}>
+              <RequireRole roles={[1, 2, 3]}>
                 <HistorialOperario />
               </RequireRole>
             </RequireAuth>
@@ -119,6 +136,7 @@ function App() {
             />
           }
         />
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

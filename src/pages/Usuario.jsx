@@ -6,7 +6,7 @@ const formularioVacio = {
   Nombre: "",
   Apellidos: "",
   Correo: "",
-  Contrasena: "",
+  contrasena: "",
   Cedula: "",
   Telefono: "",
   Estado: "Activo",
@@ -72,7 +72,7 @@ function Usuarios() {
     async function cargarUsuarios() {
       setCargando(true);
       try {
-        const respuesta = await api.get("/usuario");
+        const respuesta = await api.get("/usuarios");
         if (activo) setUsuarios(obtenerLista(respuesta.data, ["usuarios", "usuario"]));
       } catch (error) {
         if (activo) {
@@ -104,7 +104,7 @@ function Usuarios() {
       Nombre: leerCampo(user, "Nombre", "nombre", "name"),
       Apellidos: leerCampo(user, "Apellidos", "apellidos"),
       Correo: leerCampo(user, "Correo", "correo", "email"),
-      Contrasena: "",
+      contrasena: "", 
       Cedula: leerCampo(user, "Cedula", "cedula"),
       Telefono: leerCampo(user, "Telefono", "telefono"),
       Estado: leerCampo(user, "Estado", "estado", "status") || "Activo",
@@ -121,16 +121,17 @@ function Usuarios() {
 
     const datosGuardar = { ...formulario, Rol_IdRol: Number(formulario.Rol_IdRol) };
     
-    if (usuarioEnEdicion && !datosGuardar.Contrasena) {
-      delete datosGuardar.Contrasena;
+
+    if (usuarioEnEdicion && !datosGuardar.contrasena) {
+      delete datosGuardar.contrasena;
     }
 
     try {
       if (usuarioEnEdicion) {
-        await api.put(`/usuario/${usuarioEnEdicion}`, datosGuardar);
+        await api.put(`/usuarios/${usuarioEnEdicion}`, datosGuardar);
         setMensaje("Usuario actualizado correctamente.");
       } else {
-        await api.post("/usuario", datosGuardar);
+        await api.post("/usuarios", datosGuardar);
         setMensaje("Usuario creado correctamente.");
       }
       setTipoMensaje("success");
@@ -147,7 +148,7 @@ function Usuarios() {
   async function eliminarUsuario(id) {
     if (!window.confirm("¿Estás seguro de eliminar este usuario?")) return;
     try {
-      await api.delete(`/usuario/${id}`);
+      await api.delete(`/usuarios/${id}`);
       setMensaje("Usuario eliminado.");
       setTipoMensaje("success");
       setActualizarLista((v) => v + 1);
@@ -189,7 +190,7 @@ function Usuarios() {
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Contraseña {usuarioEnEdicion && "(Deja vacío para mantener)"}</label>
-                    <input type="password" name="Contrasena" className="form-control" value={formulario.contrasena} onChange={cambiarCampo} required={!usuarioEnEdicion} />
+                    <input type="password" name="contrasena" className="form-control" value={formulario.contrasena} onChange={cambiarCampo} required={!usuarioEnEdicion} />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Cédula</label>
