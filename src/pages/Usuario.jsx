@@ -13,10 +13,13 @@ const formularioVacio = {
   Rol_IdRol: "",
 };
 
-
 function leerCampo(registro, ...campos) {
   for (const campo of campos) {
-    if (registro?.[campo] !== undefined && registro[campo] !== null && registro[campo] !== "") {
+    if (
+      registro?.[campo] !== undefined &&
+      registro[campo] !== null &&
+      registro[campo] !== ""
+    ) {
       return registro[campo];
     }
   }
@@ -30,7 +33,13 @@ function obtenerLista(datos, claves = []) {
     if (Array.isArray(datos[clave])) return datos[clave];
     if (Array.isArray(datos.data?.[clave])) return datos.data[clave];
   }
-  const posiblesListas = [datos.data, datos.datos, datos.results, datos.usuarios, datos.usuario];
+  const posiblesListas = [
+    datos.data,
+    datos.datos,
+    datos.results,
+    datos.usuarios,
+    datos.usuario,
+  ];
   for (const lista of posiblesListas) {
     if (Array.isArray(lista)) return lista;
     if (lista && typeof lista === "object") {
@@ -47,13 +56,14 @@ function idUsuario(usuario) {
 
 function Usuarios() {
   const rol = Number(localStorage.getItem("rol"));
-  const puedeGestionar = rol === 1; 
+  const puedeGestionar = rol === 1;
 
   const enlaces = [
     { texto: "Inicio", ruta: "/admin" },
     { texto: "Órdenes de trabajo", ruta: "/ordenes" },
     { texto: "Usuarios", ruta: "/admin/usuario" },
     { texto: "Reportes", ruta: "/admin/reportes" },
+    { texto: "Historial", ruta: "/historial" },
   ];
 
   const [usuarios, setUsuarios] = useState([]);
@@ -61,7 +71,7 @@ function Usuarios() {
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("success");
-  
+
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [usuarioEnEdicion, setUsuarioEnEdicion] = useState(null);
   const [formulario, setFormulario] = useState(formularioVacio);
@@ -73,7 +83,8 @@ function Usuarios() {
       setCargando(true);
       try {
         const respuesta = await api.get("/usuario");
-        if (activo) setUsuarios(obtenerLista(respuesta.data, ["usuarios", "usuario"]));
+        if (activo)
+          setUsuarios(obtenerLista(respuesta.data, ["usuarios", "usuario"]));
       } catch (error) {
         if (activo) {
           setTipoMensaje("danger");
@@ -84,7 +95,9 @@ function Usuarios() {
       }
     }
     cargarUsuarios();
-    return () => { activo = false; };
+    return () => {
+      activo = false;
+    };
   }, [actualizarLista]);
 
   function cambiarCampo(e) {
@@ -119,8 +132,11 @@ function Usuarios() {
     setMensaje("");
     setGuardando(true);
 
-    const datosGuardar = { ...formulario, Rol_IdRol: Number(formulario.Rol_IdRol) };
-    
+    const datosGuardar = {
+      ...formulario,
+      Rol_IdRol: Number(formulario.Rol_IdRol),
+    };
+
     if (usuarioEnEdicion && !datosGuardar.Contrasena) {
       delete datosGuardar.Contrasena;
     }
@@ -138,7 +154,9 @@ function Usuarios() {
       setActualizarLista((v) => v + 1);
     } catch (error) {
       setTipoMensaje("danger");
-      setMensaje(error.response?.data?.mensaje || "Error al guardar el usuario.");
+      setMensaje(
+        error.response?.data?.mensaje || "Error al guardar el usuario.",
+      );
     } finally {
       setGuardando(false);
     }
@@ -162,46 +180,103 @@ function Usuarios() {
       <div className="container-fluid px-0">
         <div className="d-flex justify-content-between mb-3">
           <h3 className="text-success">Usuarios</h3>
-          <button className="btn btn-success" onClick={abrirFormularioNuevo}>Crear usuario</button>
+          <button className="btn btn-success" onClick={abrirFormularioNuevo}>
+            Crear usuario
+          </button>
         </div>
 
-        {mensaje && <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>}
+        {mensaje && (
+          <div className={`alert alert-${tipoMensaje}`}>{mensaje}</div>
+        )}
 
         {mostrarFormulario && (
           <div className="card shadow-sm mb-4">
             <div className="card-header bg-success text-white">
-              <h5 className="mb-0">{usuarioEnEdicion ? "Editar usuario" : "Crear usuario"}</h5>
+              <h5 className="mb-0">
+                {usuarioEnEdicion ? "Editar usuario" : "Crear usuario"}
+              </h5>
             </div>
             <div className="card-body">
               <form onSubmit={guardarUsuario}>
                 <div className="row g-3">
                   <div className="col-md-6">
                     <label className="form-label">Nombre</label>
-                    <input type="text" name="Nombre" className="form-control" value={formulario.Nombre} onChange={cambiarCampo} required />
+                    <input
+                      type="text"
+                      name="Nombre"
+                      className="form-control"
+                      value={formulario.Nombre}
+                      onChange={cambiarCampo}
+                      required
+                    />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Apellidos</label>
-                    <input type="text" name="Apellidos" className="form-control" value={formulario.Apellidos} onChange={cambiarCampo} required />
+                    <input
+                      type="text"
+                      name="Apellidos"
+                      className="form-control"
+                      value={formulario.Apellidos}
+                      onChange={cambiarCampo}
+                      required
+                    />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Correo</label>
-                    <input type="email" name="Correo" className="form-control" value={formulario.Correo} onChange={cambiarCampo} required />
+                    <input
+                      type="email"
+                      name="Correo"
+                      className="form-control"
+                      value={formulario.Correo}
+                      onChange={cambiarCampo}
+                      required
+                    />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label">Contraseña {usuarioEnEdicion && "(Deja vacío para mantener)"}</label>
-                    <input type="password" name="Contrasena" className="form-control" value={formulario.contrasena} onChange={cambiarCampo} required={!usuarioEnEdicion} />
+                    <label className="form-label">
+                      Contraseña{" "}
+                      {usuarioEnEdicion && "(Deja vacío para mantener)"}
+                    </label>
+                    <input
+                      type="password"
+                      name="Contrasena"
+                      className="form-control"
+                      value={formulario.Contrasena}
+                      onChange={cambiarCampo}
+                      required={!usuarioEnEdicion}
+                    />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Cédula</label>
-                    <input type="text" name="Cedula" className="form-control" value={formulario.Cedula} onChange={cambiarCampo} required />
+                    <input
+                      type="text"
+                      name="Cedula"
+                      className="form-control"
+                      value={formulario.Cedula}
+                      onChange={cambiarCampo}
+                      required
+                    />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Teléfono</label>
-                    <input type="text" name="Telefono" className="form-control" value={formulario.Telefono} onChange={cambiarCampo} required />
+                    <input
+                      type="text"
+                      name="Telefono"
+                      className="form-control"
+                      value={formulario.Telefono}
+                      onChange={cambiarCampo}
+                      required
+                    />
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Rol</label>
-                    <select name="Rol_IdRol" className="form-select" value={formulario.Rol_IdRol} onChange={cambiarCampo} required>
+                    <select
+                      name="Rol_IdRol"
+                      className="form-select"
+                      value={formulario.Rol_IdRol}
+                      onChange={cambiarCampo}
+                      required
+                    >
                       <option value="">Seleccione un rol...</option>
                       <option value="1">Administrador</option>
                       <option value="2">Supervisor</option>
@@ -210,15 +285,32 @@ function Usuarios() {
                   </div>
                   <div className="col-md-6">
                     <label className="form-label">Estado</label>
-                    <select name="Estado" className="form-select" value={formulario.Estado} onChange={cambiarCampo}>
+                    <select
+                      name="Estado"
+                      className="form-select"
+                      value={formulario.Estado}
+                      onChange={cambiarCampo}
+                    >
                       <option value="Activo">Activo</option>
                       <option value="Inactivo">Inactivo</option>
                     </select>
                   </div>
                 </div>
                 <div className="mt-3">
-                  <button type="submit" className="btn btn-success me-2" disabled={guardando}>Guardar</button>
-                  <button type="button" className="btn btn-secondary" onClick={() => setMostrarFormulario(false)}>Cancelar</button>
+                  <button
+                    type="submit"
+                    className="btn btn-success me-2"
+                    disabled={guardando}
+                  >
+                    Guardar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setMostrarFormulario(false)}
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </form>
             </div>
@@ -227,7 +319,9 @@ function Usuarios() {
 
         <div className="card shadow-sm">
           <div className="card-body">
-            {cargando ? <p>Cargando...</p> : (
+            {cargando ? (
+              <p>Cargando...</p>
+            ) : (
               <table className="table table-striped table-bordered">
                 <thead className="table-dark">
                   <tr>
@@ -242,23 +336,43 @@ function Usuarios() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usuarios.map(u => {
+                  {usuarios.map((u) => {
                     const id = idUsuario(u);
-                    const rolMap = { 1: "Admin", 2: "Supervisor", 3: "Operario" };
+                    const rolMap = {
+                      1: "Admin",
+                      2: "Supervisor",
+                      3: "Operario",
+                    };
                     return (
                       <tr key={id}>
                         <td>{id}</td>
-                        <td>{u.Nombre} {u.Apellidos}</td>
+                        <td>
+                          {u.Nombre} {u.Apellidos}
+                        </td>
                         <td>{u.Cedula}</td>
                         <td>{u.Correo}</td>
                         <td>{u.Telefono}</td>
                         <td>{rolMap[u.Rol_IdRol] || u.Rol_IdRol}</td>
                         <td>
-                          <span className={`badge ${u.Estado === 'Activo' ? 'bg-success' : 'bg-danger'}`}>{u.Estado}</span>
+                          <span
+                            className={`badge ${u.Estado === "Activo" ? "bg-success" : "bg-danger"}`}
+                          >
+                            {u.Estado}
+                          </span>
                         </td>
                         <td>
-                          <button className="btn btn-sm btn-outline-primary me-2" onClick={() => abrirFormularioEditar(u)}>Editar</button>
-                          <button className="btn btn-sm btn-outline-danger" onClick={() => eliminarUsuario(id)}>Eliminar</button>
+                          <button
+                            className="btn btn-sm btn-outline-primary me-2"
+                            onClick={() => abrirFormularioEditar(u)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => eliminarUsuario(id)}
+                          >
+                            Eliminar
+                          </button>
                         </td>
                       </tr>
                     );
