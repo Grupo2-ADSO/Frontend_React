@@ -13,13 +13,18 @@ import RequireRole from "./components/RequireRole";
 import CerrarSesion from "./pages/CerrarSesion";
 import Usuarios from "./pages/Usuario";
 import Reportes from "./pages/Reportes";
-
+import VerificarCorreo from "./pages/VerificarCorreo";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+
+        <Route
+          path="/verificar-correo"
+          element={<VerificarCorreo />}
+        />
 
         <Route
           path="/admin/informacion"
@@ -31,7 +36,7 @@ function App() {
             </RequireAuth>
           }
         />
-        
+
         <Route
           path="/admin/ordenes"
           element={<Navigate to="/ordenes" replace />}
